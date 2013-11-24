@@ -1,0 +1,15 @@
+*.DS_Store
+*.egg*
+*.log
+*.mo
+*.pyc
+*.swo
+*.swp
+*~
+.coverage
+.testrepository
+.tox
+.venv
+build
+dist
+doc/build

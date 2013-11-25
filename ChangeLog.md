@@ -1,5 +1,5 @@
-python-freeboxclient ChangeLog
-==============================
+ChangeLog
+=========
 
 Version 0.1.0 (IN PROGRESS)
 ---------------------------

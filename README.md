@@ -35,6 +35,12 @@ Results are in the *build/sphinx/html* directory.
 Documentation for **python-freeboxclient** is hosted on
 [readthedocs.org](http://readthedocs.org/docs/python-freeboxclient/en/latest/).
 
+
+## ChangeLog
+
+A changelog is available [here](ChangeLog.md).
+
+
 ## Contact
 
 Nicolas Lamirault <nicolas.lamirault@gmail.com>

@@ -52,6 +52,27 @@ class FreeboxClient():
     def _get_api_uri(self, request):
         return '%s/%s' % (self._url, request)
 
+
+    def _get_valid_headers(self):
+        return {'Content-type': 'application/json',
+                'Accept': 'application/json'}
+
+    def _freebox_get(self, uri):
+        return self.app.get(uri, headers=self._get_valid_headers())
+
+    def _freebox_post(self, uri, params):
+        return self.app.post(uri,
+                             headers=self._get_valid_headers(),
+                             data=json.dumps(params))
+
+    def _freebox_put(self, uri, params):
+        return self.app.put(uri,
+                            headers=self._get_valid_headers(),
+                            data=json.dumps(params))
+
+    def _freebox_delete(self, uri):
+        return self.app.delete(uri, headers=self._get_valid_headers())
+
     # def _saveRegistrationParams(self):
     #     """ Save registration parameters (app_id/token) to a local file """
     #     with open(self.registrationSaveFile, 'wb') as outfile:

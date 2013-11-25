@@ -1,14 +1,13 @@
 FreeboxOS Client
 ================
 
-This is a command-line client for FreeboxOS_.
-
 Contents:
 
 .. toctree::
    :maxdepth: 1
 
-   presentation
+   introduction
+   installation
    license
    changelog
 

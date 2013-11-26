@@ -82,7 +82,7 @@ class FreeboxClient():
         return hmac.new(app_token, challenge, sha1).hexdigest()
 
     def _freebox_get(self, uri, session_token=None):
-        response = self.app.get(uri,
+        response = requests.get(uri,
                                 headers=self._get_valid_headers())
         logger.info("[Freebox'] GET Response: %s %s" %
                     (response.status_code,
@@ -90,7 +90,7 @@ class FreeboxClient():
         return response
 
     def _freebox_post(self, uri, params, session_token=None):
-        response = self.app.post(uri,
+        response = requests.post(uri,
                                  headers=self._get_valid_headers(),
                                  data=json.dumps(params))
         logger.info("[Freebox'] POST Response: %s %s" %
@@ -99,7 +99,7 @@ class FreeboxClient():
         return response
 
     def _freebox_put(self, uri, params, session_token=None):
-        response = self.app.put(uri,
+        response = requests.put(uri,
                                 headers=self._get_valid_headers(),
                                 data=json.dumps(params))
         logger.info("[Freebox'] PUT Response: %s %s" %
@@ -108,7 +108,7 @@ class FreeboxClient():
         return response
 
     def _freebox_delete(self, uri, session_token=None):
-        response = self.app.delete(uri,
+        response = requests.delete(uri,
                                    headers=self._get_valid_headers())
         logger.info("[Freebox'] DELETE Response: %s %s" %
                     (response.status_code,

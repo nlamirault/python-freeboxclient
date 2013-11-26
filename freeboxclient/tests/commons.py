@@ -14,13 +14,24 @@
 # under the License.
 #
 
+
+from freeboxclient.api import FreeboxClient
+import logging
 import unittest
+
+
+logger = logging.getLogger(__name__)
 
 
 class FreeboxOSClientTestCase(unittest.TestCase):
 
+    freebox_client = None
+
     def setUp(self):
-        pass
+        self.freebox_client = FreeboxClient('python-freeboxclient-ut',
+                                            'freeboxos-ut',
+                                            '0.1.0',
+                                            'MyFreebox')
 
     def tearDown(self):
         pass
@@ -33,3 +44,8 @@ class FreeboxOSClientTestCase(unittest.TestCase):
     def tearDownClass(cls):
         pass
 
+    def check_code_and_content_type(self, response, status):
+        #logger.info("Response: %s" % response)
+        self.assertEquals(status, response.status_code)
+        self.assertEquals('application/json',
+                          response.headers["Content-Type"])

@@ -65,7 +65,7 @@ class FreeboxClient():
         headers = {}
         headers['Content-type'] = 'application/json'
         headers['Accept'] = 'application/json'
-        if authorized:
+        if session_token:
             headers[self._fbx_header] = session_token
         return headers
         # if app_token and challenge:
@@ -136,7 +136,7 @@ class FreeboxClient():
         logger.info("[Freebox] GET %s" % uri)
         response = self._freebox_get(uri)
         if response.status_code == 200:
-            return response.json()
+            return response
         else:
             raise FreeboxOSException("Can't retrieve FreeboxOS version: %s" %
                                      response.text())

@@ -1,7 +1,8 @@
 Python Freebox Client
 ======================
 
-This tools is a client to manage the FreeboxV6.
+This tools is a Command Line Interface to manage the
+[Freebox V6](http://www.free.fr/adsl/index.html).
 
 ## Install
 
@@ -18,6 +19,18 @@ This tools is a client to manage the FreeboxV6.
 		Installing Setuptools..................done.
 		Installing Pip.........................done.
         $ pip install -r requirements.txt
+
+
+## Development
+
+* Unit tests using [Tox](http://tox.testrun.org/):
+
+        $ tox
+
+* Code coverage:
+
+        $ tox -ecoverage
+
 
 ## Documentation
 

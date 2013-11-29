@@ -26,6 +26,8 @@ logger = logging.getLogger(__name__)
 class FreeboxOSClientTestCase(unittest.TestCase):
 
     freebox_client = None
+    freebox_os_uri = 'http://mafreebox.freebox.fr'
+    freebox_os_api_version = 'api/v1'
 
     def setUp(self):
         self.freebox_client = FreeboxClient('python-freeboxclient-ut',

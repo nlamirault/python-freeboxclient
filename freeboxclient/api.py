@@ -17,6 +17,7 @@
 from freeboxclient import __version__
 from freeboxclient.common import FreeboxOSException
 from hashlib import sha1
+import json
 import hmac
 import logging
 import requests
@@ -29,7 +30,7 @@ class FreeboxClient():
     """ Client for the FreeboxOS API. """
 
     _url = 'http://mafreebox.freebox.fr'
-    _version = '/api/v1'
+    _version = 'api/v1'
     _fbx_header = 'X-Fbx-App-Auth'
     api_version = None
 
@@ -68,9 +69,6 @@ class FreeboxClient():
         if session_token:
             headers[self._fbx_header] = session_token
         return headers
-        # if app_token and challenge:
-        #     h = hmac.new(apptoken, key, sha1)
-        #     password = h.hexdigest()
 
     def _creates_password(self, app_token, challenge):
         """ To authenticate the application, creates a password using a token
@@ -82,12 +80,33 @@ class FreeboxClient():
         return hmac.new(app_token, challenge, sha1).hexdigest()
 
     def _freebox_get(self, uri, session_token=None):
+        """ Perform a HTTP request to the FreeboxOS.
+
+        :param uri: the URL to call
+        :param session_token: if session_token is not None,
+        add it to the HTTP Header X-Fbx-App-Auth"""
+        logger.info("[FreeboxOS] Get: %s" % uri)
         response = requests.get(uri,
                                 headers=self._get_valid_headers())
         logger.info("[Freebox'] GET Response: %s %s" %
                     (response.status_code,
                      response.text))
-        return response
+        #return response
+        if response.status_code == 200:
+            content = response.json()
+            if uri.endswith('api_version'):
+                return content
+            elif content['success'] is True:
+                logger.info("[FreeboxOS] Response JSON: %s" %
+                            content['result'])
+                return content['result']
+            else:
+                raise FreeboxOSException("[FreeboxOS] Response error: %s" %
+                                         content)
+        else:
+            raise FreeboxOSException("[FreeboxOS] Request failed: %s %s" %
+                                     (response.status_code,
+                                      response.text))
 
     def _freebox_post(self, uri, params, session_token=None):
         response = requests.post(uri,
@@ -96,7 +115,18 @@ class FreeboxClient():
         logger.info("[Freebox'] POST Response: %s %s" %
                     (response.status_code,
                      response.text))
-        return response
+        if response.status_code == 200:
+            content = response.json()
+            if content['success'] is True:
+                logger.info("[FreeboxOS] Response JSON: %s" % content)
+                return content
+            else:
+                raise FreeboxOSException("[FreeboxOS] Response error: %s" %
+                                         content)
+        else:
+            raise FreeboxOSException("[FreeboxOS] Request failed: %s %s" %
+                                     (response.status_code,
+                                      response.text))
 
     def _freebox_put(self, uri, params, session_token=None):
         response = requests.put(uri,
@@ -113,7 +143,18 @@ class FreeboxClient():
         logger.info("[Freebox'] DELETE Response: %s %s" %
                     (response.status_code,
                      response.text))
-        return response
+        if response.status_code == 200:
+            content = response.json()
+            if content['success'] is True:
+                logger.info("[FreeboxOS] Response JSON: %s" % content)
+                return content
+            else:
+                raise FreeboxOSException("[FreeboxOS] Response error: %s" %
+                                         content)
+        else:
+            raise FreeboxOSException("[FreeboxOS] Request failed: %s %s" %
+                                     (response.status_code,
+                                      response.text))
 
     # def _saveRegistrationParams(self):
     #     """ Save registration parameters (app_id/token) to a local file """
@@ -134,12 +175,7 @@ class FreeboxClient():
         #uri = '%s/api_version' % self._url
         uri = '%s/api_version' % self._url
         logger.info("[Freebox] GET %s" % uri)
-        response = self._freebox_get(uri)
-        if response.status_code == 200:
-            return response
-        else:
-            raise FreeboxOSException("Can't retrieve FreeboxOS version: %s" %
-                                     response.text())
+        return self._freebox_get(uri)
 
     def authorize(self):
         """ Request authorization to the Freebox OS. """
@@ -243,17 +279,53 @@ class FreeboxClient():
                                      (response.status_code,
                                       response.text))
 
-    def wifi_status(self):
+    # WIFI API
+
+    def get_wifi_status(self):
         """ Request the FreeboxOS to retrive the WIFI status. """
-        uri = self._get_api_uri('wiki')
-        response = self._freebox_get(uri, self.session_token)
-        if response.status_code == 200:
-            content = response.json()
-            if content['success'] is True:
-                logger.info("Wifi status: %s" % content['result'])
-            else:
-                raise FreeboxOSException("Wifi status failed: %s" % content)
-        else:
-            raise FreeboxOSException("Request wifi status failed: %s %s" %
-                                     (response.status_code,
-                                      response.text))
+        return self._freebox_get(self._get_api_uri('wifi'),
+                                 self.session_token)
+
+    def get_wifi_config(self):
+        """ Request the FreeboxOS to retrive the WIFI configuration. """
+        return self._freebox_get(self._get_api_uri('wifi/config'),
+                                 self.session_token)
+
+    def reset_wifi_config(self):
+        """ Reset the Wifi configuration to the factory defaults. """
+        return self._freebox_post(self._get_api_uri('wifi/config/reset'),
+                                  {},
+                                  self.session_token)
+
+    def get_wifi_stations(self, bss):
+        """ Get the list of Wifi stations associated to a BSS.
+
+        :param bss: the Basic Service Set name"""
+        return self._freebox_get(self._get_api_uri('wifi/stations/%s' % bss),
+                                 self.session_token)
+
+
+
+
+    # CALLS API
+
+    def get_calls(self):
+        """ Returns the collection of alls. """
+        return self._freebox_get(self._get_api_uri('call/log'),
+                                 self.session_token)
+
+    def get_call(self, call_id):
+        """ Returns a call.
+
+        :param call_id: the identifiant of the call
+        """
+        return self._freebox_get(self._get_api_uri('call/log/%s' % call_id),
+                                 self.session_token)
+
+    def delete_call(self, call_id):
+        """ Delete a call.
+
+        :param call_id: the identifiant of the call
+        """
+        return self._freebox_delete(self._get_api_uri('call/log/%s' % call_id),
+                                    self.session_token)

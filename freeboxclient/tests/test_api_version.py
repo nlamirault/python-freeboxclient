@@ -24,14 +24,12 @@ class ApiVersionTestCase(FreeboxOSClientTestCase):
     @responses.activate
     def test_get_version_without_auth(self):
         responses.add(responses.GET,
-                      'http://mafreebox.freebox.fr/api_version',
+                      '%s/api_version' % self.freebox_os_uri,
                       body='{ "uid": "23b86ec8091013d668829fe12791fdab", "device_name": "Freebox Server", "api_version": "1.0", "api_base_url": "/api/", "device_type": "FreeboxServer1,1" }',
                       status=200,
                       content_type='application/json')
-        response = self.freebox_client.version()
+        version = self.freebox_client.version()
         # self.assertEquals("200", response.status_code)
          # self.assertEquals('application/json',
          #                   response.headers['Content-Type'])
-        self.check_code_and_content_type(response, 200)
-        version = response.json()
         self.assertEqual('1.0', version['api_version'])

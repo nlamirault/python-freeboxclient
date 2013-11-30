@@ -35,8 +35,7 @@ class FreeboxOSApp(App):
         super(FreeboxOSApp, self).__init__(
             description='freeboxos',
             version='0.1.0',
-            command_manager=CommandManager('freeboxos'),
-            )
+            command_manager=CommandManager('freeboxos'))
 
     def initialize_app(self, argv):
         self.log.debug('initialize_app')
@@ -51,7 +50,7 @@ class FreeboxOSApp(App):
             self.log.debug('got an error: %s', err)
 
     def setup_freebox_client(self):
-        """ Creates a new client to the Freebox OS. """
+        """Creates a new client to the Freebox OS."""
         conf = load_configuration()
         self.log.info("Freebox configuration: %s" % conf)
         self.freebox_client = FreeboxClient(conf['app_id'],

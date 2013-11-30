@@ -14,38 +14,33 @@
 # under the License.
 #
 
-
-from freeboxclient import __author__, CONFIG_FILE
-from freeboxclient.config import get_configuration_filename
-from cliff.command import Command
 import logging
-from os.path import exists
-import yaml
+
+from cliff import command
+
+import freeboxclient
+from freeboxclient import config
 
 
-class About(Command):
-    "A command that prints information about this tool."
+class About(command.Command):
+    """A command that prints information about this tool."""
 
     log = logging.getLogger(__name__)
 
     def take_action(self, parsed_args):
         self.app.stdout.write('This is a client for the Freebox OS.\n')
-        self.app.stdout.write('Copyright (c) %s\n' % __author__)
+        self.app.stdout.write('Copyright (c) %s\n' % freeboxclient.__author__)
 
 
-class Configuration(Command):
-    "A command that prints available configuration. "
+class Configuration(command.Command):
+    """A command that prints available configuration."""
 
     log = logging.getLogger(__name__)
 
     def take_action(self, parsed_args):
-        #self.app.stdout.write('Configuration:' % CONFIG_FILE)
-        config = load_configuration()
-        if config:
-        # if exists(config):
-        #     f = open(config)
-        #     settings = yaml.load(f)
-            self.app.stdout.write("Configuration:\n%s" % config)
+        conf = config.load_configuration()
+        if conf:
+            self.app.stdout.write("Configuration:\n%s" % conf)
         else:
             self.app.stdout.write("Configuration file %s doesn't exists.\n" %
                                   config)

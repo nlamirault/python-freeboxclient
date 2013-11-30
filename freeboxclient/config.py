@@ -14,22 +14,24 @@
 # under the License.
 #
 
+from os import path
 
-from freeboxclient import CONFIG_FILE
-from freeboxclient.common import FreeboxOSException
-from os.path import exists, expanduser
 import yaml
+
+import freeboxclient
+from freeboxclient import common
 
 
 def get_configuration_filename():
-    return "%s/.config/%s" % (expanduser("~"), CONFIG_FILE)
+    return "%s/.config/%s" % (path.expanduser("~"),
+                              freeboxclient.CONFIG_FILE)
 
 
 def load_configuration():
     config = get_configuration_filename()
-    if exists(config):
+    if path.exists(config):
         f = open(config)
         return yaml.load(f)
     else:
-        raise FreeboxOSException("Configuration file not found : %s" %
-                                 config)
+        raise common.FreeboxOSException("Configuration file not found : %s" %
+                                        config)

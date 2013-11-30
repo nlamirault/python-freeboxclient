@@ -14,9 +14,9 @@
 # under the License.
 #
 
+import logging
 
 from cliff.command import Command
-import logging
 
 
 logger = logging.getLogger(__name__)

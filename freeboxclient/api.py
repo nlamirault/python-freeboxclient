@@ -22,39 +22,53 @@ import logging
 import requests
 
 from freeboxclient import common
+from freeboxclient import config
 
 
 logger = logging.getLogger(__name__)
 
 
 class FreeboxClient():
-    """Client for the FreeboxOS API."""
+    """Client for the FreeboxOS API.
+
+    Attributes:
+    - app_id: A unique app_id string
+    - app_name: A descriptive application name displayed on lcd
+    - app_version: the application version
+    - device_name: The name of the device on which the app
+    will be used
+    """
 
     _url = 'http://mafreebox.freebox.fr'
     _version = 'api/v1'
     _fbx_header = 'X-Fbx-App-Auth'
     api_version = None
 
-    def __init__(self, app_id, app_name, app_version, device_name):
-        """Initialize a new client for the FreeboxOS API.
-
-        :param app_id: A unique app_id string
-        :param app_name: A descriptive application name displayed on lcd
-        :param app_version: the application version
-        :param device_name: The name of the device on which the app
-        will be used
-        """
-        self.app_id = app_id
-        self.app_name = app_name
-        self.app_version = app_version
-        self.device_name = device_name
+    def __init__(self, conf):
+        """Initialize a new client for the FreeboxOS API."""
+        try:
+            self.app_id = conf['app_id']
+            self.app_name = conf['app_name']
+            self.app_version = conf['app_version']
+            self.device_name = conf['device_name']
+        except KeyError as e:
+            raise FreeboxOSException("Configuration error: %s" % e)
         # Registration parameters
-        self.app_token = None
-        self.track_id = None
-        self.status = None
-        self.challenge = None
+        if 'app_token' in conf:
+            self.app_token = conf['app_token']
+        if 'track_id' in conf:
+            self.track_id = conf['track_id']
+        if 'status' in conf:
+            self.status = conf['status']
+        if 'challenge' in conf:
+            self.challenge = conf['challenge']
         # Session
         self.session_token = None
+
+    def __str__(self):
+        return "FreeboxOS(app_id=%s, app_name=%s, app_version=%s, device_name=%s, app_token=%s, track_id=%s, status=%s, challenge=%s)" % \
+            (self.app_id, self.app_name, self.app_version, self.device_name,
+             self.app_token, self.track_id, self.status, self.challenge)
 
     def _get_api_uri(self, request):
         """Make the HTTP uri to perform to retrieve information from
@@ -71,8 +85,9 @@ class FreeboxClient():
         headers = {}
         headers['Content-type'] = 'application/json'
         headers['Accept'] = 'application/json'
-        if session_token:
+        if session_token is not None:
             headers[self._fbx_header] = session_token
+        logger.info("[FreeboxOS] HTTP Headers: %s %s" % (headers, session_token))
         return headers
 
     def _creates_password(self, app_token, challenge):
@@ -120,17 +135,18 @@ class FreeboxClient():
         :param params: a dict
         :param session_token: if session_token is not None,
         add it to the HTTP Header X-Fbx-App-Auth"""
+        logger.info("[FreeboxOS] POST: %s %s" % (uri, params))
         response = requests.post(uri,
                                  headers=self._get_valid_headers(),
                                  data=json.dumps(params))
-        logger.info("[Freebox'] POST Response: %s %s" %
+        logger.info("[Freebox] POST Response: %s %s" %
                     (response.status_code,
                      response.text))
         if response.status_code == 200:
             content = response.json()
             if content['success'] is True:
                 logger.info("[FreeboxOS] Response JSON: %s" % content)
-                return content
+                return content['result']
             else:
                 raise common.FreeboxOSException("Response error: %s" %
                                                 content)
@@ -149,7 +165,7 @@ class FreeboxClient():
         response = requests.put(uri,
                                 headers=self._get_valid_headers(),
                                 data=json.dumps(params))
-        logger.info("[Freebox'] PUT Response: %s %s" %
+        logger.info("[Freebox] PUT Response: %s %s" %
                     (response.status_code,
                      response.text))
         return response
@@ -162,7 +178,7 @@ class FreeboxClient():
         add it to the HTTP Header X-Fbx-App-Auth"""
         response = requests.delete(uri,
                                    headers=self._get_valid_headers())
-        logger.info("[Freebox'] DELETE Response: %s %s" %
+        logger.info("[Freebox] DELETE Response: %s %s" %
                     (response.status_code,
                      response.text))
         if response.status_code == 200:
@@ -178,15 +194,12 @@ class FreeboxClient():
                                             (response.status_code,
                                              response.text))
 
-    # def _saveRegistrationParams(self):
-    #     """ Save registration parameters (app_id/token) to a local file """
-    #     with open(self.registrationSaveFile, 'wb') as outfile:
-    #         json.dump(self.registration, outfile)
-
-    # def _loadRegistrationParams(self):
-    #     if os.path.exists(self.registrationSaveFile):
-    #         with open(self.registrationSaveFile) as infile:
-    #             self.registration = json.load(infile)
+    def to_dict(self):
+        data = {}
+        for attr in self.__dict__.keys():
+            #if not attr.startwith('__'):
+            data[attr] = getattr(self, attr)
+        return data
 
     #
     # API
@@ -194,7 +207,6 @@ class FreeboxClient():
 
     def version(self):
         """Request to retrieve the Freebox OS api version."""
-        #uri = '%s/api_version' % self._url
         uri = '%s/api_version' % self._url
         logger.info("[Freebox] GET %s" % uri)
         return self._freebox_get(uri)
@@ -205,35 +217,25 @@ class FreeboxClient():
                   'app_name': self.app_name,
                   'app_version': self.app_version,
                   'device_name': self.device_name}
-        uri = self._get_api_uri('authorize')
-        response = self._freebox_post(uri, params)
-        if response.status_code == 200:
-            content = response.json()
-            if content['success'] is True:
-                self.track_id = content['result']['track_id']
-                self.app_token = content['result']['app_token']
-                logger.info("Accept this application. Look at the LCD screen.")
-            else:
-                raise common.FreeboxOSException("Authorization failed: %s" %
-                                                content)
+        uri = self._get_api_uri('login/authorize')
+        content = self._freebox_post(uri, params)
+        if 'track_id' in content and 'app_token' in content:
+            self.track_id = content['track_id']
+            self.app_token = content['app_token']
+            logger.info("Accept this application. Look at the LCD screen.")
+            config.save_configuration(self.to_dict())
         else:
-            raise common.FreeboxOSException("Request authorize failed: %s %s" %
-                                            (response.status_code,
-                                             response.text))
+            raise common.FreeboxOSException("Authorization failed: %s" %
+                                            content)
 
-    def check_authorization(self, track_id):
-        """Request to retrieve authorization status from the Freebox OS.
-
-        :param track_id: the ID for the application
-        """
-        uri = self._get_api_uri('login/authorize/%s' % track_id)
-        response = self._freebox_post(uri, {})
-        #authorized = None
-        if response.status_code == 200:
-            content = response.json()
-            if content['success'] is True:
-                self.status = content['result']['status']
-                self.challenge = content['result']['challenge']
+    def check_authorization(self):
+        """Request to retrieve authorization status from the Freebox OS."""
+        uri = self._get_api_uri('login/authorize/%s' % self.track_id)
+        if self.track_id:
+            content = self._freebox_get(uri, {})
+            if 'status' in content:
+                self.status = content['status']
+                self.challenge = content['challenge']
                 if self.status == 'granted':
                     logger.info("Application already granted on the FreeboxOS.")
                     #authorized = True
@@ -250,25 +252,19 @@ class FreeboxClient():
                 raise common.FreeboxOSException("Authorization failed: %s" %
                                                 content)
         else:
-            raise common.FreeboxOSException("Request check "
-                                            "authorization failed: %s %s" %
-                                            (response.status_code,
-                                             response.text))
+            logger.info("Please send authorization request before.")
 
     def login(self):
         """Make a request to the FreeboxOS to retrieve a challenge."""
         uri = self._get_api_uri('login')
-        response = self._freebox_get(uri)
-        if response.status_code == 200:
-            content = response.json()
-            if content['success'] is True:
-                self.challenge = content['result']['challenge']
-            else:
-                raise common.FreeboxOSException("Login failed: %s" % content)
+        content = self._freebox_get(uri)
+        if 'challenge' in content:
+            self.challenge = content['challenge']
+            logger.info("Freebox Login OK")
+            config.save_configuration(self.to_dict())
         else:
-            raise common.FreeboxOSException("Request login failed: %s %s" %
-                                            (response.status_code,
-                                             response.text))
+            logger.info("Freebox Login KO")
+            raise common.FreeboxOSException("Login failed: %s" % content)
 
     def open_session(self):
         """Request the FreeboxOS to retrieve a session token."""
@@ -276,36 +272,32 @@ class FreeboxClient():
         params = {'app_id': self.app_id,
                   'password': self._creates_password(self.app_token,
                                                      self.challenge)}
-        response = self._freebox_post(uri, params)
-        #authorized = None
-        if response.status_code == 200:
-            content = response.json()
-            if content['success'] is True:
-                self.session_token = content['result']['session_token']
-                self.challenge = content['result']['challenge']
-            else:
-                raise common.FreeboxOSException("Open session failed: %s" %
-                                                content)
+        content = self._freebox_post(uri, params)
+        if 'session_token' in content:
+            self.session_token = content['session_token']
+            self.challenge = content['challenge']
+            logger.info("Freebox Session opened.")
+            config.save_configuration(self.to_dict())
         else:
-            raise common.FreeboxOSException("Request open session "
-                                            "failed: %s %s" %
-                                            (response.status_code,
-                                             response.text))
+            raise common.FreeboxOSException("Open session failed: %s" %
+                                            content)
 
     def close_session(self):
         """ Request to the FreeboxOS to close the current session. """
         uri = self._get_api_uri('login/logout')
-        response = self._freebox_post(uri, {})
-        if response.status_code == 200:
-            content = response.json()
-            if content['success'] is not True:
-                raise common.FreeboxOSException("Close session failed: %s" %
-                                                content)
+        params = {'app_id': self.app_id,
+                  'password': self._creates_password(self.app_token,
+                                                     self.challenge)}
+        content = self._freebox_post(uri, params)
+        if 'success' not in content:
+            self.session_token = ''
+            self.challenge = ''
+            logger.info("Freebox Session closed.")
+            config.save_configuration(self.to_dict())
         else:
-            raise common.FreeboxOSException("Request close "
-                                            "session failed: %s %s" %
-                                            (response.status_code,
-                                             response.text))
+            raise common.FreeboxOSException("Close session failed: %s" %
+                                            content)
+
 
     # WIFI API
 

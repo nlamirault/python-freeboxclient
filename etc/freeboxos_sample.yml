@@ -1,4 +1,4 @@
 app_id: 'python-freeboxclient'
-app_name: 'FreeboxOS'
+app_name: 'Python-Freeboxclient'
 app_version: '0.1.0'
-device_name: 'MyFreebox'        
+device_name: 'Python-Freeboxclient-Laptop'

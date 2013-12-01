@@ -14,12 +14,16 @@
 # under the License.
 #
 
+import json
+import logging
 from os import path
 
 import yaml
 
 import freeboxclient
 from freeboxclient import common
+
+logger = logging.getLogger(__name__)
 
 
 def get_configuration_filename():
@@ -32,6 +36,17 @@ def load_configuration():
     if path.exists(config):
         f = open(config)
         return yaml.load(f)
+    else:
+        raise common.FreeboxOSException("Configuration file not found : %s" %
+                                        config)
+
+
+def save_configuration(conf):
+    config = get_configuration_filename()
+    if path.exists(config):
+        logger.info("Save configuration : %s %s" % (conf, config))
+        with open(config, 'wb') as yaml_file:
+            json.dump(conf, yaml_file)
     else:
         raise common.FreeboxOSException("Configuration file not found : %s" %
                                         config)

@@ -53,10 +53,7 @@ class FreeboxOSApp(App):
         """Creates a new client to the Freebox OS."""
         conf = load_configuration()
         self.log.info("Freebox configuration: %s" % conf)
-        self.freebox_client = FreeboxClient(conf['app_id'],
-                                            conf['app_name'],
-                                            conf['app_version'],
-                                            conf['device_name'])
+        self.freebox_client = FreeboxClient(conf)
 
 
 def main(argv=sys.argv[1:]):

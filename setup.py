@@ -72,6 +72,13 @@ setup(
             'config = freeboxclient.simple:Configuration',
             'freebox version = freeboxclient.client:FreeboxApiVersion',
             'freebox login = freeboxclient.client:FreeboxLogin',
+            'freebox authorize = freeboxclient.client:FreeboxAuthorize',
+            'freebox approuved = freeboxclient.client:FreeboxCheckAuthorization',
+            'freebox session_open = freeboxclient.client:FreeboxOpenSession',
+            'freebox session_close = freeboxclient.client:FreeboxCloseSession',
+            'freebox wifi_status = freeboxclient.client:FreeboxWifiStatus',
+            'freebox wifi_conf = freeboxclient.client:FreeboxWifiConfiguration',
+            'freebox wifi_stations = freeboxclient.client:FreeboxWifiStations',
         ],
     },
 

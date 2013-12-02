@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-#
 # Copyright 2013 Nicolas Lamirault <nicolas.lamirault@gmail.com>.
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -15,20 +13,20 @@
 # under the License.
 #
 
+import setuptools
 
 PROJECT = 'python-freeboxclient'
 
 # Change docs/sphinx/conf.py too!
 VERSION = '0.1.0'
 
-from setuptools import setup, find_packages
 
 try:
     long_description = open('README.md', 'rt').read()
 except IOError:
     long_description = ''
 
-setup(
+setuptools.setup(
     name=PROJECT,
     version=VERSION,
 
@@ -60,7 +58,7 @@ setup(
     install_requires=['cliff', 'requests'],
 
     namespace_packages=[],
-    packages=find_packages(),
+    packages=setuptools.find_packages(),
     include_package_data=True,
 
     entry_points={

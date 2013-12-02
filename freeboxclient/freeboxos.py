@@ -15,10 +15,10 @@
 #
 
 
-from cliff.app import App
-from cliff.commandmanager import CommandManager
-from freeboxclient.api import FreeboxClient
-from freeboxclient.config import load_configuration
+from cliff import app
+from cliff import commandmanager
+from freeboxclient import api
+from freeboxclient import config
 import logging
 import sys
 
@@ -26,7 +26,7 @@ import sys
 logger = logging.getLogger(__name__)
 
 
-class FreeboxOSApp(App):
+class FreeboxOSApp(app.App):
 
     log = logging.getLogger(__name__)
     freebox_client = None
@@ -35,7 +35,7 @@ class FreeboxOSApp(App):
         super(FreeboxOSApp, self).__init__(
             description='freeboxos',
             version='0.1.0',
-            command_manager=CommandManager('freeboxos'))
+            command_manager=commandmanager.CommandManager('freeboxos'))
 
     def initialize_app(self, argv):
         self.log.debug('initialize_app')
@@ -51,9 +51,9 @@ class FreeboxOSApp(App):
 
     def setup_freebox_client(self):
         """Creates a new client to the Freebox OS."""
-        conf = load_configuration()
+        conf = config.load_configuration()
         self.log.info("Freebox configuration: %s" % conf)
-        self.freebox_client = FreeboxClient(conf)
+        self.freebox_client = api.FreeboxClient(conf)
 
 
 def main(argv=sys.argv[1:]):

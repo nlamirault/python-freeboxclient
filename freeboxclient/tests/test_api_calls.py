@@ -14,12 +14,12 @@
 # under the License.
 #
 
-
-from freeboxclient.tests.commons import FreeboxOSClientTestCase
 import responses
 
+from freeboxclient.tests import commons
 
-class ApiCallsTestCase(FreeboxOSClientTestCase):
+
+class ApiCallsTestCase(commons.FreeboxOSClientTestCase):
 
     @responses.activate
     def test_get_all_calls(self):

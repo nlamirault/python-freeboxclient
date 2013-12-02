@@ -16,7 +16,7 @@
 
 
 class FreeboxOSException(Exception):
-    """ Exception for FreeboxOS. """
+    """Exception for FreeboxOS."""
 
     def __init__(self, reason):
         self.reason = reason

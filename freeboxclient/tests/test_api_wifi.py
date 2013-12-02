@@ -15,11 +15,12 @@
 #
 
 
-from freeboxclient.tests.commons import FreeboxOSClientTestCase
 import responses
 
+from freeboxclient.tests import commons
 
-class ApiWifiTestCase(FreeboxOSClientTestCase):
+
+class ApiWifiTestCase(commons.FreeboxOSClientTestCase):
 
     @responses.activate
     def test_get_wifi_status(self):

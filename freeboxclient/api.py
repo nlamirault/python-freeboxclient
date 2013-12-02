@@ -1,3 +1,4 @@
+
 #
 # Copyright 2013 Nicolas Lamirault <nicolas.lamirault@gmail.com>.
 #
@@ -14,7 +15,7 @@
 # under the License.
 #
 
-from hashlib import sha1
+import hashlib
 import hmac
 import json
 import logging
@@ -52,7 +53,7 @@ class FreeboxClient():
             self.app_version = conf['app_version']
             self.device_name = conf['device_name']
         except KeyError as e:
-            raise FreeboxOSException("Configuration error: %s" % e)
+            raise common.FreeboxOSException("Configuration error: %s" % e)
         # Registration parameters
         if 'app_token' in conf:
             self.app_token = conf['app_token']
@@ -74,7 +75,8 @@ class FreeboxClient():
         """Make the HTTP uri to perform to retrieve information from
         the FreeboxOS.
 
-        :param request: the REST uri"""
+        :param request: the REST uri
+        """
         return '%s/%s/%s' % (self._url, self._version, request)
 
     def _get_valid_headers(self, session_token=None):
@@ -97,14 +99,15 @@ class FreeboxClient():
         :param app_token: token send by the FreeboxOS on the authorize request.
         :param challenge: a challenge send by the FreeboxOS.
         """
-        return hmac.new(app_token, challenge, sha1).hexdigest()
+        return hmac.new(app_token, challenge, hashlib.sha1).hexdigest()
 
     def _freebox_get(self, uri, session_token=None):
         """Perform a HTTP GET request to the FreeboxOS.
 
         :param uri: the URL to call
         :param session_token: if session_token is not None,
-        add it to the HTTP Header X-Fbx-App-Auth"""
+        add it to the HTTP Header X-Fbx-App-Auth
+        """
         logger.info("[FreeboxOS] Get: %s" % uri)
         response = requests.get(uri,
                                 headers=self._get_valid_headers())
@@ -134,7 +137,8 @@ class FreeboxClient():
         :param uri: the URL to call
         :param params: a dict
         :param session_token: if session_token is not None,
-        add it to the HTTP Header X-Fbx-App-Auth"""
+        add it to the HTTP Header X-Fbx-App-Auth
+        """
         logger.info("[FreeboxOS] POST: %s %s" % (uri, params))
         response = requests.post(uri,
                                  headers=self._get_valid_headers(),
@@ -161,7 +165,8 @@ class FreeboxClient():
         :param uri: the URL to call
         :param params: a dict
         :param session_token: if session_token is not None,
-        add it to the HTTP Header X-Fbx-App-Auth"""
+        add it to the HTTP Header X-Fbx-App-Auth
+        """
         response = requests.put(uri,
                                 headers=self._get_valid_headers(),
                                 data=json.dumps(params))
@@ -175,7 +180,8 @@ class FreeboxClient():
 
         :param uri: the URL to call
         :param session_token: if session_token is not None,
-        add it to the HTTP Header X-Fbx-App-Auth"""
+        add it to the HTTP Header X-Fbx-App-Auth
+        """
         response = requests.delete(uri,
                                    headers=self._get_valid_headers())
         logger.info("[Freebox] DELETE Response: %s %s" %
@@ -283,7 +289,7 @@ class FreeboxClient():
                                             content)
 
     def close_session(self):
-        """ Request to the FreeboxOS to close the current session. """
+        """Request to the FreeboxOS to close the current session."""
         uri = self._get_api_uri('login/logout')
         params = {'app_id': self.app_id,
                   'password': self._creates_password(self.app_token,
@@ -297,7 +303,6 @@ class FreeboxClient():
         else:
             raise common.FreeboxOSException("Close session failed: %s" %
                                             content)
-
 
     # WIFI API
 
@@ -320,7 +325,8 @@ class FreeboxClient():
     def get_wifi_stations(self, bss):
         """Get the list of Wifi stations associated to a BSS.
 
-        :param bss: the Basic Service Set name"""
+        :param bss: the Basic Service Set name
+        """
         return self._freebox_get(self._get_api_uri('wifi/stations/%s' % bss),
                                  self.session_token)
 

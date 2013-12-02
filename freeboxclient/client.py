@@ -16,14 +16,14 @@
 
 import logging
 
-from cliff.command import Command
+from cliff import command
 
 
 logger = logging.getLogger(__name__)
 
 
-class FreeboxCommand(Command):
-    """Freebox command"""
+class FreeboxCommand(command.Command):
+    """Default Freebox command."""
 
     pass
 

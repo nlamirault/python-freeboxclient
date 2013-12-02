@@ -43,10 +43,6 @@ def load_configuration():
 
 def save_configuration(conf):
     config = get_configuration_filename()
-    if path.exists(config):
-        logger.info("Save configuration : %s %s" % (conf, config))
-        with open(config, 'wb') as yaml_file:
-            json.dump(conf, yaml_file)
-    else:
-        raise common.FreeboxOSException("Configuration file not found : %s" %
-                                        config)
+    logger.info("Save configuration : %s %s" % (conf, config))
+    with open(config, 'wb') as yaml_file:
+        json.dump(conf, yaml_file)

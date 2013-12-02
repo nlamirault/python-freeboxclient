@@ -150,7 +150,10 @@ class FreeboxClient():
             content = response.json()
             if content['success'] is True:
                 logger.info("[FreeboxOS] Response JSON: %s" % content)
-                return content['result']
+                if 'result' in content:
+                    return content['result']
+                else:
+                    return content
             else:
                 raise common.FreeboxOSException("Response error: %s" %
                                                 content)
@@ -203,7 +206,6 @@ class FreeboxClient():
     def to_dict(self):
         data = {}
         for attr in self.__dict__.keys():
-            #if not attr.startwith('__'):
             data[attr] = getattr(self, attr)
         return data
 

@@ -31,10 +31,12 @@ class FreeboxOSClientTestCase(unittest.TestCase):
     freebox_os_api_version = 'api/v1'
 
     def setUp(self):
-        self.freebox_client = api.FreeboxClient('python-freeboxclient-ut',
-                                                'freeboxos-ut',
-                                                '0.1.0',
-                                                'MyFreebox')
+        conf = {}
+        conf['app_id'] = 'python-freeboxclient'
+        conf['app_name'] = 'Python-Freeboxclient'
+        conf['app_version'] = '0.1.0'
+        conf['device_name'] = 'Python-Freeboxclient-Laptop'
+        self.freebox_client = api.FreeboxClient(conf)
 
     def tearDown(self):
         pass

@@ -57,6 +57,10 @@ class FreeboxOSClientTestCase(unittest.TestCase):
     def tearDownClass(cls):
         pass
 
+    def add_authentication(self):
+        self.freebox_client.track_id = '42'
+        self.freebox_client.session_token = '35JYdQSvkcBYK84IFMU'
+
     def check_code_and_content_type(self, response, status):
         #logger.info("Response: %s" % response)
         self.assertEqual(status, response.status_code)

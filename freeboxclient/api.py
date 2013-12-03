@@ -1,4 +1,3 @@
-
 #
 # Copyright 2013 Nicolas Lamirault <nicolas.lamirault@gmail.com>.
 #
@@ -15,6 +14,7 @@
 # under the License.
 #
 
+import functools
 import hashlib
 import hmac
 import json
@@ -27,6 +27,8 @@ from freeboxclient import config
 
 
 logger = logging.getLogger(__name__)
+
+
 
 
 class FreeboxClient():
@@ -74,7 +76,8 @@ class FreeboxClient():
         if 'challenge' in conf:
             self.challenge = conf['challenge']
         # Session
-        self.session_token = None
+        if 'session_token' in conf:
+            self.session_token = conf['session_token']
 
     def __str__(self):
         return "FreeboxOS(app_id=%s, app_name=%s, app_version=%s, device_name=%s, app_token=%s, track_id=%s, status=%s, challenge=%s)" % \
@@ -89,7 +92,7 @@ class FreeboxClient():
         """
         return '%s/%s/%s' % (self._url, self._version, request)
 
-    def _get_valid_headers(self, session_token=None):
+    def _get_valid_headers(self):
         """Make HTTP headers.
 
         :param session_token: a token for the current session
@@ -97,9 +100,8 @@ class FreeboxClient():
         headers = {}
         headers['Content-type'] = 'application/json'
         headers['Accept'] = 'application/json'
-        if session_token is not None:
-            headers[self._fbx_header] = session_token
-        logger.info("[FreeboxOS] HTTP Headers: %s %s" % (headers, session_token))
+        headers[self._fbx_header] = self.session_token
+        logger.info("[FreeboxOS] HTTP Headers: %s" % headers)
         return headers
 
     def _creates_password(self, app_token, challenge):
@@ -111,7 +113,7 @@ class FreeboxClient():
         """
         return hmac.new(app_token, challenge, hashlib.sha1).hexdigest()
 
-    def _freebox_get(self, uri, session_token=None):
+    def _freebox_get(self, uri):
         """Perform a HTTP GET request to the FreeboxOS.
 
         :param uri: the URL to call
@@ -119,7 +121,8 @@ class FreeboxClient():
         add it to the HTTP Header X-Fbx-App-Auth
         """
         headers = self._get_valid_headers()
-        logger.info("[FreeboxOS] HTTP GET: %s %s" % (uri, headers))
+        logger.info("[FreeboxOS] HTTP GET %s %s" % (uri, headers))
+        print("[FreeboxOS] HTTP GET: %s %s" % (uri, headers))
         response = requests.get(uri, headers=headers)
         logger.info("[Freebox'] GET Response: %s %s" %
                     (response.status_code,
@@ -141,7 +144,7 @@ class FreeboxClient():
                                             (response.status_code,
                                              response.text))
 
-    def _freebox_post(self, uri, params, session_token=None):
+    def _freebox_post(self, uri, params):
         """Perform a HTTP POST request to the FreeboxOS.
 
         :param uri: the URL to call
@@ -174,7 +177,7 @@ class FreeboxClient():
                                             (response.status_code,
                                              response.text))
 
-    def _freebox_put(self, uri, params, session_token=None):
+    def _freebox_put(self, uri, params):
         """Perform a HTTP PUT request to the FreeboxOS.
 
         :param uri: the URL to call
@@ -183,7 +186,7 @@ class FreeboxClient():
         add it to the HTTP Header X-Fbx-App-Auth
         """
         headers = self._get_valid_headers()
-        logger.info("[FreeboxOS] HTTP PUTT: %s %s %s" %
+        logger.info("[FreeboxOS] HTTP PUT: %s %s %s" %
                     (uri, params, headers))
         response = requests.put(uri,
                                 headers=headers,
@@ -193,15 +196,17 @@ class FreeboxClient():
                      response.text))
         return response
 
-    def _freebox_delete(self, uri, session_token=None):
+    def _freebox_delete(self, uri):
         """Perform a HTTP DELETE request to the FreeboxOS.
 
         :param uri: the URL to call
         :param session_token: if session_token is not None,
         add it to the HTTP Header X-Fbx-App-Auth
         """
-        response = requests.delete(uri,
-                                   headers=self._get_valid_headers())
+        headers = self._get_valid_headers()
+        logger.info("[FreeboxOS] HTTP DELETE: %s %s" %
+                    (uri, headers))
+        response = requests.delete(uri, headers=headers)
         logger.info("[Freebox] DELETE Response: %s %s" %
                     (response.status_code,
                      response.text))
@@ -223,6 +228,17 @@ class FreeboxClient():
         for attr in self.__dict__.keys():
             data[attr] = getattr(self, attr)
         return data
+
+    def _need_authentication(self):
+        if self.session_token is None:
+            raise common.FreeboxOSAuthException("no session token found.")
+
+    def authenticate(func):
+        @functools.wraps(func)
+        def wrapped(inst, *args, **kwargs):
+            inst._need_authentication()
+            return func(inst, *args, **kwargs)
+        return wrapped
 
     #
     # API
@@ -255,7 +271,7 @@ class FreeboxClient():
         """Request to retrieve authorization status from the Freebox OS."""
         if self.track_id:
             uri = self._get_api_uri('login/authorize/%s' % self.track_id)
-            content = self._freebox_get(uri, {})
+            content = self._freebox_get(uri)
             if 'status' in content:
                 self.status = content['status']
                 self.challenge = content['challenge']
@@ -326,49 +342,50 @@ class FreeboxClient():
 
     # WIFI API
 
+    @authenticate
     def get_wifi_status(self):
         """Request the FreeboxOS to retrive the WIFI status."""
-        return self._freebox_get(self._get_api_uri('wifi'),
-                                 self.session_token)
+        return self._freebox_get(self._get_api_uri('wifi'))
 
+    @authenticate
     def get_wifi_config(self):
         """Request the FreeboxOS to retrive the WIFI configuration."""
-        return self._freebox_get(self._get_api_uri('wifi/config'),
-                                 self.session_token)
+        return self._freebox_get(self._get_api_uri('wifi/config'))
 
+    @authenticate
     def reset_wifi_config(self):
         """Reset the Wifi configuration to the factory defaults."""
         return self._freebox_post(self._get_api_uri('wifi/config/reset'),
-                                  {},
-                                  self.session_token)
+                                  {})
 
+    @authenticate
     def get_wifi_stations(self, bss):
         """Get the list of Wifi stations associated to a BSS.
 
         :param bss: the Basic Service Set name
         """
-        return self._freebox_get(self._get_api_uri('wifi/stations/%s' % bss),
-                                 self.session_token)
+        return self._freebox_get(self._get_api_uri('wifi/stations/%s' % bss))
 
     # CALLS API
 
+    @authenticate
     def get_calls(self):
         """Returns the collection of alls."""
-        return self._freebox_get(self._get_api_uri('call/log'),
-                                 self.session_token)
+        return self._freebox_get(self._get_api_uri('call/log'))
 
+    @authenticate
     def get_call(self, call_id):
         """Returns a call.
 
         :param call_id: the identifiant of the call
         """
-        return self._freebox_get(self._get_api_uri('call/log/%s' % call_id),
-                                 self.session_token)
+        return self._freebox_get(self._get_api_uri('call/log/%s' % call_id))
 
+    @authenticate
     def delete_call(self, call_id):
         """Delete a call.
 
         :param call_id: the identifiant of the call
         """
-        return self._freebox_delete(self._get_api_uri('call/log/%s' % call_id),
-                                    self.session_token)
+        return self._freebox_delete(self._get_api_uri('call/log/%s' %
+                                                      call_id))

@@ -40,6 +40,7 @@ class ApiCallsTestCase(commons.FreeboxOSClientTestCase):
                       "] }",
                       status=200,
                       content_type='application/json')
+        self.add_authentication()
         calls = self.freebox_client.get_calls()
         self.assertEqual(2, len(calls))
 
@@ -55,6 +56,7 @@ class ApiCallsTestCase(commons.FreeboxOSClientTestCase):
                       "\"name\":\"Romain Bureau\", \"new\":true } }",
                       status=200,
                       content_type='application/json')
+        self.add_authentication()
         call = self.freebox_client.get_call('69')
         self.assertEqual('0102030405', call['number'])
 
@@ -66,5 +68,6 @@ class ApiCallsTestCase(commons.FreeboxOSClientTestCase):
                       body="{ \"success\":true }",
                       status=200,
                       content_type='application/json')
+        self.add_authentication()
         deleted = self.freebox_client.delete_call('69')
         self.assertTrue(deleted['success'])

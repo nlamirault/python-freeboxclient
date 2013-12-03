@@ -38,6 +38,7 @@ class ApiWifiTestCase(commons.FreeboxOSClientTestCase):
                       " \"active\":true } }, \"active\":true } }",
                       status=200,
                       content_type='application/json')
+        self.add_authentication()
         wifi = self.freebox_client.get_wifi_status()
         self.assertTrue(wifi['active'])
         self.assertTrue(wifi['bss'] is not None)
@@ -59,6 +60,7 @@ class ApiWifiTestCase(commons.FreeboxOSClientTestCase):
                       "\"ht_mode\":\"20\", \"channel\":3 } } }",
                       status=200,
                       content_type='application/json')
+        self.add_authentication()
         wifi = self.freebox_client.get_wifi_config()
         self.assertTrue(wifi['ap_params'] is not None)
         self.assertTrue(wifi['bss'] is not None)
@@ -71,6 +73,7 @@ class ApiWifiTestCase(commons.FreeboxOSClientTestCase):
                       body="{ \"success\":true }",
                       status=200,
                       content_type='application/json')
+        self.add_authentication()
         deleted = self.freebox_client.reset_wifi_config()
         self.assertTrue(deleted['success'])
 

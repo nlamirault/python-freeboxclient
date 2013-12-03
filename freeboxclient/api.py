@@ -43,6 +43,16 @@ class FreeboxClient():
     _url = 'http://mafreebox.freebox.fr'
     _version = 'api/v1'
     _fbx_header = 'X-Fbx-App-Auth'
+
+    app_id = None
+    app_name = None
+    app_version = None
+    device_name = None
+    app_token = None
+    track_id = None
+    status = None
+    challenge = None
+    session_token = None
     api_version = None
 
     def __init__(self, conf):
@@ -108,9 +118,9 @@ class FreeboxClient():
         :param session_token: if session_token is not None,
         add it to the HTTP Header X-Fbx-App-Auth
         """
-        logger.info("[FreeboxOS] Get: %s" % uri)
-        response = requests.get(uri,
-                                headers=self._get_valid_headers())
+        headers = self._get_valid_headers()
+        logger.info("[FreeboxOS] HTTP GET: %s %s" % (uri, headers))
+        response = requests.get(uri, headers=headers)
         logger.info("[Freebox'] GET Response: %s %s" %
                     (response.status_code,
                      response.text))
@@ -139,9 +149,11 @@ class FreeboxClient():
         :param session_token: if session_token is not None,
         add it to the HTTP Header X-Fbx-App-Auth
         """
-        logger.info("[FreeboxOS] POST: %s %s" % (uri, params))
+        headers = self._get_valid_headers()
+        logger.info("[FreeboxOS] HTTP POST: %s %s %s" %
+                    (uri, params, headers))
         response = requests.post(uri,
-                                 headers=self._get_valid_headers(),
+                                 headers=headers,
                                  data=json.dumps(params))
         logger.info("[Freebox] POST Response: %s %s" %
                     (response.status_code,
@@ -170,8 +182,11 @@ class FreeboxClient():
         :param session_token: if session_token is not None,
         add it to the HTTP Header X-Fbx-App-Auth
         """
+        headers = self._get_valid_headers()
+        logger.info("[FreeboxOS] HTTP PUTT: %s %s %s" %
+                    (uri, params, headers))
         response = requests.put(uri,
-                                headers=self._get_valid_headers(),
+                                headers=headers,
                                 data=json.dumps(params))
         logger.info("[Freebox] PUT Response: %s %s" %
                     (response.status_code,
@@ -219,7 +234,7 @@ class FreeboxClient():
         logger.info("[Freebox] GET %s" % uri)
         return self._freebox_get(uri)
 
-    def authorize(self):
+    def ask_authorization(self):
         """Request authorization to the Freebox OS."""
         params = {'app_id': self.app_id,
                   'app_name': self.app_name,
@@ -238,12 +253,13 @@ class FreeboxClient():
 
     def check_authorization(self):
         """Request to retrieve authorization status from the Freebox OS."""
-        uri = self._get_api_uri('login/authorize/%s' % self.track_id)
         if self.track_id:
+            uri = self._get_api_uri('login/authorize/%s' % self.track_id)
             content = self._freebox_get(uri, {})
             if 'status' in content:
                 self.status = content['status']
                 self.challenge = content['challenge']
+                config.save_configuration(self.to_dict())
                 if self.status == 'granted':
                     logger.info("Application already granted on the FreeboxOS.")
                     #authorized = True
@@ -256,11 +272,13 @@ class FreeboxClient():
                     logger.info("This application has been denied by the FreeboxOS.")
                 elif self.status == 'timeout':
                     logger.info("Confirmation of the authorization has not arrived on time.")
+                return content
             else:
                 raise common.FreeboxOSException("Authorization failed: %s" %
                                                 content)
         else:
-            logger.info("Please send authorization request before.")
+            raise common.FreeboxOSException("Please send authorization "
+                                            "request before.")
 
     def login(self):
         """Make a request to the FreeboxOS to retrieve a challenge."""

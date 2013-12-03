@@ -16,8 +16,12 @@
 
 
 import logging
+import os
+from os import path
+import time
 import unittest
 
+import freeboxclient
 from freeboxclient import api
 
 
@@ -39,7 +43,8 @@ class FreeboxOSClientTestCase(unittest.TestCase):
         self.freebox_client = api.FreeboxClient(conf)
 
     def tearDown(self):
-        pass
+        freeboxclient.CONFIG_FILE = "freeboxos.yml"
+        print "File: %s" % freeboxclient.CONFIG_FILE
 
     @classmethod
     def setUpClass(cls):
@@ -54,3 +59,20 @@ class FreeboxOSClientTestCase(unittest.TestCase):
         self.assertEqual(status, response.status_code)
         self.assertEqual('application/json',
                          response.headers["Content-Type"])
+
+    def creates_configuration_file(self):
+        output_file = "%s/.config/%s" % (path.expanduser("~"),
+                                         freeboxclient.CONFIG_FILE)
+        with open(output_file, 'w') as out:
+            out.write("app_id: '%s'\n" % self.freebox_client.app_id)
+            out.write("app_name: '%s'\n" % self.freebox_client.app_name)
+            out.write("app_version: '%s'\n" % self.freebox_client.app_version)
+            out.write("device_name: '%s'\n" % self.freebox_client.device_name)
+
+    def delete_configuration_file(self):
+        output_file = "%s/.config/%s" % (path.expanduser("~"),
+                                         freeboxclient.CONFIG_FILE)
+        os.remove(output_file)
+
+    def random_configuration_file(self):
+        return "%s.yml" % int(round(time.time() * 1000))

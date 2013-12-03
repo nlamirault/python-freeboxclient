@@ -54,7 +54,7 @@ class FreeboxAuthorize(FreeboxCommand):
 
     def take_action(self, parsed_args):
         logger.info("[FreeboxCmd] Authorization request")
-        self.app.freebox_client.authorize()
+        self.app.freebox_client.ask_authorization()
 
 
 class FreeboxCheckAuthorization(FreeboxCommand):

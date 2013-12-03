@@ -23,3 +23,9 @@ class FreeboxOSException(Exception):
 
     def __str__(self):
         return self.reason
+
+
+class FreeboxOSAuthException(FreeboxOSException):
+    """Exception when no valid authentication header is provisioned."""
+
+    pass

@@ -48,7 +48,10 @@ class FreeboxOSClientTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        logger.info("Start unit tests")
+        logger.info("Check configuration directory")
+        directory = "%s/.config" % path.expanduser("~")
+        if not path.exists(directory):
+            os.makedirs(directory)
 
     @classmethod
     def tearDownClass(cls):

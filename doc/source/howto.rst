@@ -2,6 +2,18 @@
  Howto
 =======
 
+Configuration
+=============
+
+Creates a personal configuration file in **$HOME/.config** directory::
+
+  $ cat $HOME/.config/freeboxos.yml
+  app_id: 'python-freeboxclient'
+  app_name: 'Python-Freeboxclient'
+  app_version: '0.1.0'
+  device_name: 'Python-Freeboxclient-Laptop'
+
+
 Autorization
 ============
 
@@ -18,7 +30,7 @@ The app will ask for an authorization using the following call.
 A message will be displayed on the Freebox LCD asking the user
 to grant/deny access to the requesting app::
 
-	$ freeboxos freebox authorize
+  $ freeboxos freebox authorize
 
 
 Track authorization progress
@@ -26,7 +38,7 @@ Track authorization progress
 
 The app should monitor the status until it is different from pending::
 
-	$ freeboxos freebox authorization_status
+  $ freeboxos freebox authorization_status
 
 
 Open a session
@@ -35,7 +47,7 @@ Open a session
 Once you have the authorization for your application, you just need to
 start a new session::
 
-	$ freeboxos freebox start_session
+  $ freeboxos freebox start_session
 
 
 Close a session
@@ -43,4 +55,4 @@ Close a session
 
 To close the current session you can use the following call::
 
-	$ freeboxos freebox stop_session
+  $ freeboxos freebox stop_session

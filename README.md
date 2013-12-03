@@ -4,6 +4,8 @@ Python Freebox Client
 This tools is a Command Line Interface to manage the
 [Freebox V6](http://www.free.fr/adsl/index.html).
 
+[![Build Status](https://travis-ci.org/[nlamirault]/[python-freeboxclient].png)](https://travis-ci.org/[nlamirault]/[python-freeboxclient])
+
 ## Install
 
 * Install Python tools:

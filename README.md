@@ -1,6 +1,7 @@
 # Python Freebox Client
 
 [![Build Status](https://travis-ci.org/nlamirault/python-freeboxclient.png)](https://travis-ci.org/nlamirault/python-freeboxclient)
+[![Coverage Status](https://coveralls.io/repos/nlamirault/python-freeboxclient/badge.png?branch=master)](https://coveralls.io/r/nlamirault/python-freeboxclient?branch=master)
 [![Dependency Status](https://gemnasium.com/nlamirault/python-freeboxclient.png)](https://gemnasium.com/nlamirault/python-freeboxclient)
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/nlamirault/python-freeboxclient/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 

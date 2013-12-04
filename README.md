@@ -1,4 +1,4 @@
-# Python Freebox Client [![Build Status](https://travis-ci.org/nlamirault/python-freeboxclient.png)](https://travis-ci.org/nlamirault/python-freeboxclient)
+# Python Freebox Client [![Build Status](https://travis-ci.org/nlamirault/python-freeboxclient.png)](https://travis-ci.org/nlamirault/python-freeboxclient) [![Dependency Status](https://gemnasium.com/nlamirault/python-freeboxclient.png)](https://gemnasium.com/nlamirault/python-freeboxclient)
 
 This tools is a Command Line Interface to manage the
 [Freebox V6](http://www.free.fr/adsl/index.html).

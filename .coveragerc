@@ -1,5 +1,5 @@
-
-mit =
+[run]
+omit =
     */python?.?/functools.py
     */python?.?/shlex.py
     */python?.?/weakref.py

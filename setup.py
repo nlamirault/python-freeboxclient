@@ -21,17 +21,11 @@ PROJECT = 'python-freeboxclient'
 VERSION = '0.1.0'
 
 
-try:
-    long_description = open('README.md', 'rt').read()
-except IOError:
-    long_description = ''
-
 setuptools.setup(
     name=PROJECT,
     version=VERSION,
 
     description='A client for the FreeboxOS.',
-    long_description=long_description,
 
     author='Nicolas Lamirault',
     author_email='nicolas.lamirault@gmail.com',

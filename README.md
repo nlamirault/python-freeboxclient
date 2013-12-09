@@ -1,7 +1,7 @@
 # Python Freebox Client
 
 [![PyPI version](https://badge.fury.io/py/python-freeboxclient.png)](http://badge.fury.io/py/python-freeboxclient)
-[![Downloads](https://pypip.in/d/python-freeboxclient/badge.png)](https://crate.io/package/python-freeboxclient)
+[![Downloads](https://pypip.in/d/python-freeboxclient/badge.png)](https://crate.io/packages/python-freeboxclient)
 [![Build Status](https://travis-ci.org/nlamirault/python-freeboxclient.png)](https://travis-ci.org/nlamirault/python-freeboxclient)
 [![Coverage Status](https://coveralls.io/repos/nlamirault/python-freeboxclient/badge.png?branch=master)](https://coveralls.io/r/nlamirault/python-freeboxclient?branch=master)
 [![Dependency Status](https://gemnasium.com/nlamirault/python-freeboxclient.png)](https://gemnasium.com/nlamirault/python-freeboxclient)

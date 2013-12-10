@@ -21,7 +21,7 @@ PROJECT = 'python-freeboxclient'
 # Change docs/sphinx/conf.py too!
 VERSION = '0.1.0'
 
-install_reqs = pep.parse_requirements('./requirements.txt')
+install_reqs = req.parse_requirements('./requirements.txt')
 reqs = [str(ir.req) for ir in install_reqs]
 
 setuptools.setup(

@@ -53,7 +53,7 @@ setuptools.setup(
 
     provides=[],
     # install_requires=['cliff', 'requests'],
-    install_requires=reqs
+    install_requires=reqs,
 
     namespace_packages=[],
     packages=setuptools.find_packages(),

@@ -103,4 +103,4 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 .. _Sphinx: http://sphinx-doc.org
 .. _`the repository`: http://github.com/nlamirault/python-freeboxclient
 .. _ChangeLog: http://github.com/nlamirault/python-freeboxclient/blob/master/ChangeLog.md
-.. _AUTHORS: http://github.com/nlamirault/python-freeboxclient/blob/master/AUTHORS
+.. _AUTHORS: http://github.com/nlamirault/python-freeboxclient/blob/master/AUTHORS.rst

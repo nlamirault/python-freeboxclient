@@ -65,8 +65,7 @@ This documentation is written by contributors, for contributors.
 The source is maintained in the *doc/source* folder using
 reStructuredText_ and built by Sphinx_
 
-
-Buil67reStructuredText_.ding Manually:
+Building Manually:
 
 .. code-block:: bash
 
@@ -103,5 +102,5 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 .. _reStructuredText: http://docutils.sourceforge.net/rst.html
 .. _Sphinx: http://sphinx-doc.org
 .. _`the repository`: http://github.com/nlamirault/python-freeboxclient
-.. _ChangeLog
-.. _AUTHORS
+.. _ChangeLog: http://github.com/nlamirault/python-freeboxclient/blob/master/ChangeLog.md
+.. _AUTHORS: http://github.com/nlamirault/python-freeboxclient/blob/master/AUTHORS

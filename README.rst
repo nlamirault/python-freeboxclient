@@ -10,13 +10,13 @@ Python Freebox Client
 .. image:: https://travis-ci.org/nlamirault/python-freeboxclient.png
 
 .. image:: https://coveralls.io/repos/nlamirault/python-freeboxclient/badge.png?branch=master
-    :target https://coveralls.io/r/nlamirault/python-freeboxclient?branch=master
+    :target: https://coveralls.io/r/nlamirault/python-freeboxclient?branch=master
 
 .. image:: https://gemnasium.com/nlamirault/python-freeboxclient.png
-    :target https://gemnasium.com/nlamirault/python-freeboxclient
+    :target: https://gemnasium.com/nlamirault/python-freeboxclient
 
 .. image:: https://d2weczhvl823v0.cloudfront.net/nlamirault/python-freeboxclient/trend.png
-    :target https://bitdeli.com/free
+    :target: https://bitdeli.com/free
 
 This tools is a Command Line Interface to manage the FreeboxV6_
 

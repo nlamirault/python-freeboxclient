@@ -29,8 +29,6 @@ from freeboxclient import config
 logger = logging.getLogger(__name__)
 
 
-
-
 class FreeboxClient():
     """Client for the FreeboxOS API.
 
@@ -101,7 +99,7 @@ class FreeboxClient():
         headers['Content-type'] = 'application/json'
         headers['Accept'] = 'application/json'
         headers[self._fbx_header] = self.session_token
-        logger.info("[FreeboxOS] HTTP Headers: %s" % headers)
+        logger.debug("[FreeboxOS] HTTP Headers: %s" % headers)
         return headers
 
     def _creates_password(self, app_token, challenge):
@@ -111,7 +109,12 @@ class FreeboxClient():
         :param app_token: token send by the FreeboxOS on the authorize request.
         :param challenge: a challenge send by the FreeboxOS.
         """
-        return hmac.new(app_token, challenge, hashlib.sha1).hexdigest()
+        if app_token is None or challenge is None:
+            raise common.FreeboxOSException("Auth invalid: %s %s" %
+                                            (app_token, challenge))
+        else:
+            logger.debug("Creates password: %s %s" % (app_token, challenge))
+            return hmac.new(app_token, challenge, hashlib.sha1).hexdigest()
 
     def _freebox_get(self, uri):
         """Perform a HTTP GET request to the FreeboxOS.
@@ -121,20 +124,20 @@ class FreeboxClient():
         add it to the HTTP Header X-Fbx-App-Auth
         """
         headers = self._get_valid_headers()
-        logger.info("[FreeboxOS] HTTP GET %s %s" % (uri, headers))
+        logger.debug("[FreeboxOS] HTTP GET %s %s" % (uri, headers))
         print("[FreeboxOS] HTTP GET: %s %s" % (uri, headers))
         response = requests.get(uri, headers=headers)
-        logger.info("[Freebox'] GET Response: %s %s" %
-                    (response.status_code,
-                     response.text))
+        logger.debug("[Freebox'] GET Response: %s %s" %
+                     (response.status_code,
+                      response.text))
         #return response
         if response.status_code == 200:
             content = response.json()
             if uri.endswith('api_version'):
                 return content
             elif content['success'] is True:
-                logger.info("[FreeboxOS] Response JSON: %s" %
-                            content['result'])
+                logger.debug("[FreeboxOS] Response JSON: %s" %
+                             content['result'])
                 return content['result']
             else:
                 raise common.FreeboxOSException("Response error: %s" %
@@ -153,18 +156,18 @@ class FreeboxClient():
         add it to the HTTP Header X-Fbx-App-Auth
         """
         headers = self._get_valid_headers()
-        logger.info("[FreeboxOS] HTTP POST: %s %s %s" %
-                    (uri, params, headers))
+        logger.debug("[FreeboxOS] HTTP POST: %s %s %s" %
+                     (uri, params, headers))
         response = requests.post(uri,
                                  headers=headers,
                                  data=json.dumps(params))
-        logger.info("[Freebox] POST Response: %s %s" %
-                    (response.status_code,
-                     response.text))
+        logger.debug("[Freebox] POST Response: %s %s" %
+                     (response.status_code,
+                      response.text))
         if response.status_code == 200:
             content = response.json()
             if content['success'] is True:
-                logger.info("[FreeboxOS] Response JSON: %s" % content)
+                logger.debug("[FreeboxOS] Response JSON: %s" % content)
                 if 'result' in content:
                     return content['result']
                 else:
@@ -186,14 +189,14 @@ class FreeboxClient():
         add it to the HTTP Header X-Fbx-App-Auth
         """
         headers = self._get_valid_headers()
-        logger.info("[FreeboxOS] HTTP PUT: %s %s %s" %
-                    (uri, params, headers))
+        logger.debug("[FreeboxOS] HTTP PUT: %s %s %s" %
+                     (uri, params, headers))
         response = requests.put(uri,
                                 headers=headers,
                                 data=json.dumps(params))
-        logger.info("[Freebox] PUT Response: %s %s" %
-                    (response.status_code,
-                     response.text))
+        logger.debug("[Freebox] PUT Response: %s %s" %
+                     (response.status_code,
+                      response.text))
         return response
 
     def _freebox_delete(self, uri):
@@ -204,16 +207,16 @@ class FreeboxClient():
         add it to the HTTP Header X-Fbx-App-Auth
         """
         headers = self._get_valid_headers()
-        logger.info("[FreeboxOS] HTTP DELETE: %s %s" %
-                    (uri, headers))
+        logger.debug("[FreeboxOS] HTTP DELETE: %s %s" %
+                     (uri, headers))
         response = requests.delete(uri, headers=headers)
-        logger.info("[Freebox] DELETE Response: %s %s" %
-                    (response.status_code,
-                     response.text))
+        logger.delete("[Freebox] DELETE Response: %s %s" %
+                      (response.status_code,
+                       response.text))
         if response.status_code == 200:
             content = response.json()
             if content['success'] is True:
-                logger.info("[FreeboxOS] Response JSON: %s" % content)
+                logger.debug("[FreeboxOS] Response JSON: %s" % content)
                 return content
             else:
                 raise common.FreeboxOSException("Response error: %s" %
@@ -247,7 +250,7 @@ class FreeboxClient():
     def version(self):
         """Request to retrieve the Freebox OS api version."""
         uri = '%s/api_version' % self._url
-        logger.info("[Freebox] GET %s" % uri)
+        logger.debug("[Freebox] GET %s" % uri)
         return self._freebox_get(uri)
 
     def ask_authorization(self):

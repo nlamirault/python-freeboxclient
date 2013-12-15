@@ -6,7 +6,7 @@ Licensing
 Auteurs
 -------
 
-.. include:: ../../AUTHORS
+.. include:: ../../AUTHORS.rst
 
 License
 --------

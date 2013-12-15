@@ -13,6 +13,7 @@
 # under the License.
 #
 
+from pip import req
 import setuptools
 
 PROJECT = 'python-freeboxclient'
@@ -20,6 +21,8 @@ PROJECT = 'python-freeboxclient'
 # Change docs/sphinx/conf.py too!
 VERSION = '0.1.0'
 
+install_reqs = req.parse_requirements('./requirements.txt')
+reqs = [str(ir.req) for ir in install_reqs]
 
 setuptools.setup(
     name=PROJECT,
@@ -49,7 +52,8 @@ setuptools.setup(
     scripts=[],
 
     provides=[],
-    install_requires=['cliff', 'requests'],
+    # install_requires=['cliff', 'requests'],
+    install_requires=reqs,
 
     namespace_packages=[],
     packages=setuptools.find_packages(),

@@ -195,8 +195,7 @@ class FreeboxClient():
                                 headers=headers,
                                 data=json.dumps(params))
         logger.debug("[Freebox] PUT Response: %s %s" %
-                     (response.status_code,
-                      response.text))
+                     (response.status_code, response.text))
         return response
 
     def _freebox_delete(self, uri):
@@ -210,9 +209,8 @@ class FreeboxClient():
         logger.debug("[FreeboxOS] HTTP DELETE: %s %s" %
                      (uri, headers))
         response = requests.delete(uri, headers=headers)
-        logger.delete("[Freebox] DELETE Response: %s %s" %
-                      (response.status_code,
-                       response.text))
+        logger.debug("[Freebox] DELETE Response: %s %s" %
+                     (response.status_code, response.text))
         if response.status_code == 200:
             content = response.json()
             if content['success'] is True:

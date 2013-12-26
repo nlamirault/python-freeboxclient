@@ -8,6 +8,10 @@ Python Freebox Client
     :target: https://crate.io/packages/python-freeboxclient
 
 .. image:: https://travis-ci.org/nlamirault/python-freeboxclient.png
+    :target: http//travis-ci.org/nlamirault/python-freeboxclient
+
+.. image:: https://drone.io/github.com/nlamirault/python-freeboxclient/status.png
+    :target: http://drone.io/github.com/nlamirault/python-freeboxclient/latest
 
 .. image:: https://coveralls.io/repos/nlamirault/python-freeboxclient/badge.png?branch=master
     :target: https://coveralls.io/r/nlamirault/python-freeboxclient?branch=master

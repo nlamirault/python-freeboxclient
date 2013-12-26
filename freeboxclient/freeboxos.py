@@ -52,11 +52,18 @@ class FreeboxOSApp(app.App):
     def setup_freebox_client(self):
         """Creates a new client to the Freebox OS."""
         conf = config.load_configuration()
-        self.log.info("Freebox configuration: %s" % conf)
+        self.log.debug("Freebox configuration: %s" % conf)
         self.freebox_client = api.FreeboxClient(conf)
 
 
+def setup_logging():
+    logging.basicConfig(format="%(asctime)s - %(name)s - "
+                        "%(levelname)s - %(message)s",
+                        level=logging.DEBUG)
+
+
 def main(argv=sys.argv[1:]):
+    setup_logging()
     app = FreeboxOSApp()
     return app.run(argv)
 

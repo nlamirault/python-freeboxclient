@@ -18,6 +18,9 @@ Python Freebox Client
 .. image:: https://d2weczhvl823v0.cloudfront.net/nlamirault/python-freeboxclient/trend.png
     :target: https://bitdeli.com/free
 
+.. image:: https://badge.waffle.io/nlamirault/python-freeboxclient.png?label=ready
+    :target: http://waffle.io/nlamirault/python-freeboxclient
+
 This tools is a Command Line Interface to manage the FreeboxV6_
 
 Install

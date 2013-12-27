@@ -10,6 +10,9 @@ Python Freebox Client
 .. image:: https://travis-ci.org/nlamirault/python-freeboxclient.png
     :target: http//travis-ci.org/nlamirault/python-freeboxclient
 
+.. image:: https://app.wercker.com/status/3fad72a1bb6196a9ab3093bcf60cf7b4
+    :target: https://app.wercker.com/project/bykey/3fad72a1bb6196a9ab3093bcf60cf7b4
+
 .. image:: https://drone.io/github.com/nlamirault/python-freeboxclient/status.png
     :target: http://drone.io/github.com/nlamirault/python-freeboxclient/latest
 

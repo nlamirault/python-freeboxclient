@@ -1,0 +1,11 @@
+box: wercker/python
+build:
+    steps:
+        - virtualenv:
+            name: setup virtual environment
+        - pip-install:
+            clean_wheel_dir: true
+        - script:
+            name: Python Freebox client unit tests
+            code: |
+                tox

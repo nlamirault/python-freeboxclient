@@ -78,7 +78,9 @@ class FreeboxClient():
             self.session_token = conf['session_token']
 
     def __str__(self):
-        return "FreeboxOS(app_id=%s, app_name=%s, app_version=%s, device_name=%s, app_token=%s, track_id=%s, status=%s, challenge=%s)" % \
+        return "FreeboxOS(app_id=%s, app_name=%s, app_version=%s, "
+        "device_name=%s, app_token=%s, track_id=%s, status=%s, "
+        "challenge=%s)" % \
             (self.app_id, self.app_name, self.app_version, self.device_name,
              self.app_token, self.track_id, self.status, self.challenge)
 
@@ -125,7 +127,6 @@ class FreeboxClient():
         """
         headers = self._get_valid_headers()
         logger.debug("[FreeboxOS] HTTP GET %s %s" % (uri, headers))
-        print("[FreeboxOS] HTTP GET: %s %s" % (uri, headers))
         response = requests.get(uri, headers=headers)
         logger.debug("[Freebox'] GET Response: %s %s" %
                      (response.status_code,
@@ -278,17 +279,22 @@ class FreeboxClient():
                 self.challenge = content['challenge']
                 config.save_configuration(self.to_dict())
                 if self.status == 'granted':
-                    logger.info("Application already granted on the FreeboxOS.")
+                    logger.info("Application already granted on the "
+                                "FreeboxOS.")
                     #authorized = True
                 elif self.status == 'pending':
-                    logger.info("Please confirmed the authorization request on the FreeboxOS.")
+                    logger.info("Please confirmed the authorization request "
+                                "on the FreeboxOS.")
                     #authorized = True
                 elif self.status == 'unknown':
-                    logger.info("This application is unknown from the FreeboxOS. Please send authorization again.")
+                    logger.info("Unknown application from the FreeboxOS. "
+                                "Please send authorization again.")
                 elif self.status == 'denied':
-                    logger.info("This application has been denied by the FreeboxOS.")
+                    logger.info("This application has been denied by the "
+                                "FreeboxOS.")
                 elif self.status == 'timeout':
-                    logger.info("Confirmation of the authorization has not arrived on time.")
+                    logger.info("Confirmation of the authorization has not "
+                                "arrived on time.")
                 return content
             else:
                 raise common.FreeboxOSException("Authorization failed: %s" %
@@ -332,7 +338,7 @@ class FreeboxClient():
                   'password': self._creates_password(self.app_token,
                                                      self.challenge)}
         content = self._freebox_post(uri, params)
-        if 'success' not in content:
+        if 'success' in content:
             self.session_token = ''
             self.challenge = ''
             logger.info("Freebox Session closed.")

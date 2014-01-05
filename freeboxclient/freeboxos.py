@@ -14,13 +14,14 @@
 # under the License.
 #
 
+import logging
+import sys
 
 from cliff import app
 from cliff import commandmanager
+
 from freeboxclient import api
 from freeboxclient import config
-import logging
-import sys
 
 
 logger = logging.getLogger(__name__)
@@ -57,9 +58,15 @@ class FreeboxOSApp(app.App):
 
 
 def setup_logging():
-    logging.basicConfig(format="%(asctime)s - %(name)s - "
-                        "%(levelname)s - %(message)s",
-                        level=logging.DEBUG)
+    logging.basicConfig(format="%(asctime)s %(levelname)s - %(message)s",
+                        filename='/tmp/freeboxos.log',
+                        filemode='w',
+                        level=logging.INFO)
+    # hdlr = logging.FileHandler('/tmp/freeboxos.log')
+    # formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+    # hdlr.setFormatter(formatter)
+    # logger.addHandler(hdlr)
+    # logger.setLevel(logging.INFO)
 
 
 def main(argv=sys.argv[1:]):

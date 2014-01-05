@@ -13,7 +13,7 @@ Dependencies
 **python-freeboxclient** depends on distribute_, the updated replacement for
 setuptools.
 
-.. _install-basic:
+.. _distribute: https://pypi.python.org/pypi/distribute
 
 Basic Installation
 ==================

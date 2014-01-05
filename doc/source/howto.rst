@@ -32,7 +32,7 @@ The CLI could display all available commands:
 Configuration
 =============
 
-Creates a personal configuration file in **$HOME/.config** directory::
+Creates a personal configuration file in **$HOME/.config** directory:
 
 .. code-block:: bash
 
@@ -57,7 +57,7 @@ Request authorization
 
 The app will ask for an authorization using the following call.
 A message will be displayed on the Freebox LCD asking the user
-to grant/deny access to the requesting app::
+to grant/deny access to the requesting app:
 
 .. code-block:: bash
 
@@ -70,7 +70,7 @@ to grant/deny access to the requesting app::
 Track authorization progress
 ----------------------------
 
-The app should monitor the status until it is different from pending::
+The app should monitor the status until it is different from pending:
 
 .. code-block:: bash
 
@@ -95,7 +95,7 @@ Open a session
 --------------
 
 Once you have the authorization for your application, you just need to
-start a new session::
+start a new session:
 
 .. code-block:: bash
 
@@ -107,7 +107,7 @@ start a new session::
 Close a session
 ---------------
 
-To close the current session you can use the following call::
+To close the current session you can use the following call:
 
 .. code-block:: bash
 

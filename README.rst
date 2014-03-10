@@ -8,7 +8,7 @@ Python Freebox Client
     :target: https://crate.io/packages/python-freeboxclient
 
 .. image:: https://travis-ci.org/nlamirault/python-freeboxclient.png
-    :target: http//travis-ci.org/nlamirault/python-freeboxclient
+    :target: http://travis-ci.org/nlamirault/python-freeboxclient
 
 .. image:: https://app.wercker.com/status/3fad72a1bb6196a9ab3093bcf60cf7b4
     :target: https://app.wercker.com/project/bykey/3fad72a1bb6196a9ab3093bcf60cf7b4

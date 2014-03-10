@@ -2,7 +2,6 @@ language: python
 python:
     - "2.7"
 install: "pip install -r requirements.txt --use-mirrors"
+before_script: mkdir -p shippable/codecoverage shippable/testresults
 script:
-    - nosetests --with-xunit --xunit-file=nosetests.xml --cover-package=freeboxclient
-    - coverage run --branch freeboxclient
-    - coverage xml -o nosetests.xml freeboxclient
+    nosetests --exe --with-xunit --xunit-file=shippable/testresults/nosetests.xml --with-xcoverage --xcoverage-file=shippable/codecoverage/coverage.xml --cover-package=freeboxclient

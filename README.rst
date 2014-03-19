@@ -41,9 +41,9 @@ Install
 .. code-block:: bash
 
         $ mkvirtualenv freeboxclient
-	New python executable in python-freeboxclient/bin/python
-	Installing Setuptools..................done.
-	Installing Pip.........................done.
+        New python executable in python-freeboxclient/bin/python
+        Installing Setuptools..................done.
+        Installing Pip.........................done.
         $ pip install -r requirements.txt
 
 

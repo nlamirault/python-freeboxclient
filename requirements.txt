@@ -25,4 +25,4 @@ sexpdata==0.0.3
 tox==1.6.1
 virtualenv==1.10.1
 wsgiref==0.1.2
-urllib3>=1.26.5 # not directly required, pinned by Snyk to avoid a vulnerability
+urllib3==1.26.8 # not directly required, pinned by Snyk to avoid a vulnerability

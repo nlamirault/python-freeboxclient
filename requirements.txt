@@ -19,7 +19,7 @@ py==1.10.0
 pyaml==13.07.1
 pyflakes==0.7.3
 pyparsing==2.0.1
-requests==2.0.1
+requests==2.20.0
 responses==0.1.0
 sexpdata==0.0.3
 tox==1.6.1

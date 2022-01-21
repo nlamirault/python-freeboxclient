@@ -16,7 +16,7 @@ nosexcover==1.0.8
 pep8==1.4.6
 prettytable==0.7.2
 py==1.10.0
-pyaml==13.07.1
+pyaml==13.12.0
 pyflakes==0.7.3
 pyparsing==2.0.1
 requests==2.20.0

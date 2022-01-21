@@ -17,7 +17,7 @@ pep8==1.4.6
 prettytable==0.7.2
 py==1.10.0
 pyaml==13.07.1
-pyflakes==0.7.3
+pyflakes==0.9.2
 pyparsing==2.0.1
 requests==2.20.0
 responses==0.1.0
